@@ -74,7 +74,11 @@ namespace FullBomHoum
                 for (int Coli = 0; Coli < ppoColumns.Length; Coli++)
 
                 {
-                    //Found In свойство в PDM в спецификации должно быть выше (левее), чем свойство Name     
+                    //Found In свойство в PDM в спецификации должно быть выше (левее), чем свойство Name
+                    if(Coli ==42)
+                    {
+                        int i = 0;
+                    }
                     if (ppoColumns[Coli].mbsCaption.Contains(GetAssemblyID.strFoundIn))
                     {
                         Row.GetVar(ppoColumns[Coli].mlVariableID, ppoColumns[Coli].meType, out poValue, out poComputedValue, out pbsConfiguration, out pbReadOnly);
@@ -123,14 +127,25 @@ namespace FullBomHoum
                         //Проверяем есть ли зачекиненный чертеж в папке с деталью с именем соответствующим детали
                         if (!vault1.IsLoggedIn) { vault1.LoginAuto(GetAssemblyID.pdmName, 0); }
                         bFile = (IEdmFile7)vault1.GetFileFromPath(d, out IEdmFolder5 bFolder); 
+
                         if ((bFile != null) && (!bFile.IsLocked)) //true если файл не пусто и зачекинен                                           
                         { workRow[GetAssemblyID.strDraw] = true;
                             workRow[GetAssemblyID.strDrawState] = bFile.CurrentState.Name.ToString(); }
 
-                       // //Получаем и вносим в таблицу ID файла вручную
-                      //   cFile = (IEdmFile7)vault1.GetFileFromPath(p, out IEdmFolder5 cFolder);
-                      //  if (cFile != null) //true если файл не пусто                                      
-                      //  { workRow[GetAssemblyID.strFileID] = cFile.ID.ToString(); }
+                        // Достаем из чертежа версию ссылки на родителя (VersionRef)
+                            IEdmReference5 ref5 = bFile.GetReferenceTree(bFolder.ID);
+                            IEdmReference10 ref10 = (IEdmReference10)ref5;
+                            IEdmPos5 pos = ref10.GetFirstChildPosition3("A", true, true, (int)EdmRefFlags.EdmRef_File, "", 0);
+                        while (!pos.IsNull)
+                            {
+                                IEdmReference10 @ref = (IEdmReference10)ref5.GetNextChild(pos);
+                                Console.Write("VersionRef - " + @ref.VersionRef + "\r\n");   // версия ссылки на родителя                                 
+                            }
+
+                        // //Получаем и вносим в таблицу ID файла вручную
+                        //   cFile = (IEdmFile7)vault1.GetFileFromPath(p, out IEdmFolder5 cFolder);
+                        //  if (cFile != null) //true если файл не пусто                                      
+                        //  { workRow[GetAssemblyID.strFileID] = cFile.ID.ToString(); }
 
                     }
 
@@ -184,7 +199,7 @@ namespace FullBomHoum
 
                   string regCuby = @"^CUBY-\d{8}$";
 */
-
+                   
 
                 //1. Проверка на наличие чертежа
                 if (workRow[GetAssemblyID.strDraw].ToString() == ""
@@ -236,7 +251,7 @@ namespace FullBomHoum
                     
                 } //Количество ошибок в строке
 
-
+                
                 if ((workRow[GetAssemblyID.strSection].ToString() == "Стандартные изделия")
                     && IsCUBY
                     )
@@ -251,6 +266,7 @@ namespace FullBomHoum
                     workRow[GetAssemblyID.strErC] = Convert.ToInt16(workRow[GetAssemblyID.strErC]) + 1;
                 }
 
+                                           
                 
                 /*//Проверка массы >0
                 float.TryParse(workRow[GetAssemblyID.strWeight].ToString(), System.Globalization.NumberStyles.Any, new System.Globalization.CultureInfo("en-US"), out float W);

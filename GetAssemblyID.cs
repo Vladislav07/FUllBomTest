@@ -93,7 +93,7 @@ namespace FullBomHoum
                 {
                     #region setVar
                     //Заполнение названий свойств из файлаC:\Users\belov\source\FB
-                    System.IO.StreamReader objReader = new System.IO.StreamReader("C:\\Users\\belov\\source\\FB\\FullBOM_2.0.2.cfg");
+                    System.IO.StreamReader objReader = new System.IO.StreamReader(@"C:\Users\v.belov\source\FUllBomTest\FullBOM_2.0.2.cfg"); //("C:\\Users\\belov\\source\\FB\\FullBOM_2.0.2.cfg");
                     string sLine = "";
                     ArrayList arrText = new ArrayList();
                     while (sLine != null)
@@ -187,7 +187,7 @@ namespace FullBomHoum
                     cellStyleErr.BackColor = colorError; //Стиль ячеек содержащих ошибки
 
                     #endregion
-                    string FileName = "A:\\My\\10-тонный электрический подъемный кран\\ramka-1.sldasm";
+                    string FileName = @"C:\CUBY_PDM\Work\Other\Без проекта\CUBY-V1.1\CAD\Завод контейнер\16 - Участок обработки листового металла и трубы\Концепт участка обработки листового металла и трубы\Кран балка листа\CUBY-00153564.sldasm"; //"A:\\My\\10-тонный электрический подъемный кран\\ramka-1.sldasm";
                     string e = System.IO.Path.GetExtension(FileName);
                     name0 = System.IO.Path.GetFileNameWithoutExtension(FileName);
 
@@ -196,7 +196,7 @@ namespace FullBomHoum
                     EdmVault5 v = new EdmVault5();
                     if (!v.IsLoggedIn)
                     {
-                        v.LoginAuto("My", 0);
+                        v.LoginAuto("CUBY_PDM", 0);
                         MessageBox.Show("Ok!!!");
                     }
 

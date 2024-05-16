@@ -218,7 +218,7 @@ namespace FullBomHoum
                     )//Детали или Сборочные единицы
                 { DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strDXF].Index].Style = GetAssemblyID.cellStyleErr; }
 
-
+                
                 //2.1. Проверка на наличие IGS
                 if (DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strIgs].Index].Value.ToString() == ""
                     && (DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strSection].Index].Value.ToString() == "Детали")
@@ -227,7 +227,7 @@ namespace FullBomHoum
                     )//Детали или Сборочные единицы
                 { DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strIgs].Index].Style = GetAssemblyID.cellStyleErr; }
 
-
+                
                 //3. Проверка на виртуальные детали
                 if (DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strPartNumber].Index].Value.ToString().Contains("^") == true)
                 { DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strPartNumber].Index].Style = GetAssemblyID.cellStyleErr; }
