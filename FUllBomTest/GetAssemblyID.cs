@@ -93,7 +93,7 @@ namespace FullBomHoum
                 {
                     #region setVar
                     //Заполнение названий свойств из файлаC:\Users\belov\source\FB
-                    System.IO.StreamReader objReader = new System.IO.StreamReader(@"C:\Users\v.belov\source\FUllBomTest\FullBOM_2.0.8.cfg"); //("C:\\Users\\belov\\source\\FB\\FullBOM_2.0.2.cfg");
+                    System.IO.StreamReader objReader = new System.IO.StreamReader(@"C:\Users\v.belov\source\LocalFullBom\FullBOM_2.0.8.cfg"); //("C:\\Users\\belov\\source\\FB\\FullBOM_2.0.2.cfg");
                     string sLine = "";
                     ArrayList arrText = new ArrayList();
                     while (sLine != null)
