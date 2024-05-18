@@ -138,8 +138,10 @@ namespace FullBomHoum
                             IEdmPos5 pos = ref10.GetFirstChildPosition3("A", true, true, (int)EdmRefFlags.EdmRef_File, "", 0);
                         while (!pos.IsNull)
                             {
+
                                 IEdmReference10 @ref = (IEdmReference10)ref5.GetNextChild(pos);
-                                Console.Write("VersionRef - " + @ref.VersionRef + "\r\n");   // версия ссылки на родителя                                 
+                                Console.Write("VersionRef - " + @ref.VersionRef + "\r\n");   // версия ссылки на родителя, для дебага, можно удалить
+                                GetAssemblyID.strRev = @ref.VersionRef.ToString();
                             }
 
                         // //Получаем и вносим в таблицу ID файла вручную
