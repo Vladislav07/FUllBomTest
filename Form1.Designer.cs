@@ -56,7 +56,6 @@ namespace FullBomHoum
             this.PM = new System.Windows.Forms.Button();
             this.BOM = new System.Windows.Forms.Button();
             this.label8 = new System.Windows.Forms.Label();
-            this.btnToPDF = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.advancedDataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).BeginInit();
             this.SuspendLayout();
@@ -84,6 +83,7 @@ namespace FullBomHoum
             this.advancedDataGridView1.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.AdvancedDataGridView1_CellContentDoubleClick);
             this.advancedDataGridView1.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.AdvancedDataGridView1_CellEndEdit);
             this.advancedDataGridView1.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.AdvancedDataGridView1_RowsRemoved);
+            this.advancedDataGridView1.CellClick += dataGridView1_CellClick;
             // 
             // bindingSource1
             // 
@@ -129,9 +129,9 @@ namespace FullBomHoum
             // 
             this.button1.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
             this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.button1.Location = new System.Drawing.Point(635, 12);
+            this.button1.Location = new System.Drawing.Point(657, 12);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(112, 32);
+            this.button1.Size = new System.Drawing.Size(111, 32);
             this.button1.TabIndex = 19;
             this.button1.Text = "Export to Excel";
             this.button1.Click += new System.EventHandler(this.Export_To_Excel_Click);
@@ -236,9 +236,9 @@ namespace FullBomHoum
             // 
             this.button3.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
             this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.button3.Location = new System.Drawing.Point(823, 12);
+            this.button3.Location = new System.Drawing.Point(786, 12);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(89, 31);
+            this.button3.Size = new System.Drawing.Size(114, 31);
             this.button3.TabIndex = 28;
             this.button3.Text = "Reset all filters";
             this.button3.Click += new System.EventHandler(this.Button3_Click);
@@ -309,21 +309,9 @@ namespace FullBomHoum
             this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.label8.SizeChanged += new System.EventHandler(this.Label8_SizeChanged);
             // 
-            // btnToPDF
-            // 
-            this.btnToPDF.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btnToPDF.Location = new System.Drawing.Point(753, 13);
-            this.btnToPDF.Name = "btnToPDF";
-            this.btnToPDF.Size = new System.Drawing.Size(64, 30);
-            this.btnToPDF.TabIndex = 35;
-            this.btnToPDF.Text = "ToPDF";
-            this.btnToPDF.UseVisualStyleBackColor = true;
-            this.btnToPDF.Click += new System.EventHandler(this.btnToPDF_Click);
-            // 
             // Form1
             // 
             this.ClientSize = new System.Drawing.Size(1456, 657);
-            this.Controls.Add(this.btnToPDF);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.BOM);
             this.Controls.Add(this.PM);
@@ -396,6 +384,5 @@ namespace FullBomHoum
         private Button PM;
         private Button BOM;
         private Label label8;
-        private Button btnToPDF;
     }
 }

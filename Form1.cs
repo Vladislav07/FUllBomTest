@@ -6,9 +6,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using Excel = Microsoft.Office.Interop.Excel;
-
-
-
+using System.Drawing;
 
 namespace FullBomHoum
 {
@@ -83,9 +81,7 @@ namespace FullBomHoum
                 if (comboBox3.FindStringExact(GetAssemblyID.strFullBOM) != -1)
                 { comboBox3.SelectedItem = GetAssemblyID.strFullBOM; }
                 else
-                { MessageBox.Show("Add the " + GetAssemblyID.strFullBOM + " templete to Bills of materials"); 
-                    //System.Environment.Exit(0); 
-                }
+                { MessageBox.Show("Add the " + GetAssemblyID.strFullBOM + " templete to Bills of materials"); Environment.Exit(0); }
 
                 comboBox4.Items.Add("");
 
@@ -191,13 +187,15 @@ namespace FullBomHoum
             for (int i = 0; i < DG.Rows.Count; i++)
             {
 
-
                 string regCuby = @"^CUBY-\d{8}$";
                 string fileName = DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strFileName].Index].Value.ToString();
                 string[] parts = fileName.Split('.');
                 string cuteFileName = parts[0].ToString();
                 bool IsCUBY = Regex.IsMatch(cuteFileName, regCuby);
 
+                //0. Изменение цвета ячейки в колонке с ошибками
+                if (DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strErC].Index].Value.ToString() != "0") //Количество ошибок в строке
+                { DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strErC].Index].Style = GetAssemblyID.cellStyleErr; }
 
                 //1. Проверка на наличие чертежа
                 if (DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strDraw].Index].Value.ToString() == ""
@@ -205,7 +203,10 @@ namespace FullBomHoum
                  && (DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strSection].Index].Value.ToString() == "Детали"
                  || DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strSection].Index].Value.ToString() == "Сборочные единицы")
                  && DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strNoSHEETS].Index].Value.ToString() != "1")
-                { DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strDraw].Index].Style = GetAssemblyID.cellStyleErr; }
+                {
+                    DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strDraw].Index].Style = GetAssemblyID.cellStyleErr;
+                    DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strNoSHEETS].Index].Style = GetAssemblyID.cellStyleErr;
+                }
                 //  else if (DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strDraw].Index].Value.ToString() == "True" & (DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strSection].Index].Value.ToString() == "Детали" || DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strSection].Index].Value.ToString() == "Сборочные единицы"))
                 // { DG.Rows[i].DefaultCellStyle.BackColor = Color.Honeydew;} //Раскрашивать зеленым если есть чертеж
 
@@ -213,21 +214,23 @@ namespace FullBomHoum
                 //2. Проверка на наличие DXF
                 if (DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strDXF].Index].Value.ToString() == ""
                     && (DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strSection].Index].Value.ToString() == "Детали")
-                    && DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strLaserCut].Index].Value.ToString() == "1"
-                    //|| DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strNoSHEETS].Index].Value.ToString() == "1"
-                    )//Детали или Сборочные единицы
-                { DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strDXF].Index].Style = GetAssemblyID.cellStyleErr; }
+                    && DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strLaserCut].Index].Value.ToString() == "1")
+                {
+                    DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strDXF].Index].Style = GetAssemblyID.cellStyleErr;
+                    DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strLaserCut].Index].Style = GetAssemblyID.cellStyleErr;
+                }
 
-                
+
                 //2.1. Проверка на наличие IGS
                 if (DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strIgs].Index].Value.ToString() == ""
                     && (DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strSection].Index].Value.ToString() == "Детали")
-                    && DG.Rows[i].Cells[DG.Columns[GetAssemblyID.str3DCuting].Index].Value.ToString() == "1"
-                    //|| DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strNoSHEETS].Index].Value.ToString() == "1"
-                    )//Детали или Сборочные единицы
-                { DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strIgs].Index].Style = GetAssemblyID.cellStyleErr; }
+                    && DG.Rows[i].Cells[DG.Columns[GetAssemblyID.str3DCuting].Index].Value.ToString() == "1")
+                {
+                    DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strIgs].Index].Style = GetAssemblyID.cellStyleErr;
+                    DG.Rows[i].Cells[DG.Columns[GetAssemblyID.str3DCuting].Index].Style = GetAssemblyID.cellStyleErr;
+                }
 
-                
+
                 //3. Проверка на виртуальные детали
                 if (DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strPartNumber].Index].Value.ToString().Contains("^") == true)
                 { DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strPartNumber].Index].Style = GetAssemblyID.cellStyleErr; }
@@ -242,34 +245,21 @@ namespace FullBomHoum
                     if ((DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strState].Index].Value.ToString() != "Approved to use")
                         && (DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strSection].Index].Value.ToString() == "Стандартные изделия"
                         || DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strSection].Index].Value.ToString() == "Прочие изделия"
-                        || DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strSection].Index].Value.ToString() == "Материалы"
-                    )
-                )
+                        || DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strSection].Index].Value.ToString() == "Материалы"))
                     {
                         if ((DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strState].Index].Value.ToString() != "Check library item")
                                 && (DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strSection].Index].Value.ToString() == "Стандартные изделия"
                                 || DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strSection].Index].Value.ToString() == "Прочие изделия"
-                                || DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strSection].Index].Value.ToString() == "Материалы"
-                            )
-                        )
+                                || DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strSection].Index].Value.ToString() == "Материалы"))
                         {
                             DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strState].Index].Style = GetAssemblyID.cellStyleErr;
-                            /*DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strSection].Index].Style = GetAssemblyID.cellStyleErr;
-                            DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strPartNumber].Index].Style = GetAssemblyID.cellStyleErr;*/
                         }
                     }
                 }
 
-                if ((DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strSection].Index].Value.ToString() == "Стандартные изделия")
-                    && IsCUBY
-                    )
-                // && (DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strPartNumber].Index].Value.ToString() != ""
-                /* || DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strState].Index].Value.ToString() != "Modification  library item"
-                 || DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strState].Index].Value.ToString() != "Initiated"
-                  || DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strState].Index].Value.ToString() != "Kanban"
-                  || DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strState].Index].Value.ToString() != "Approved to use"
-                  || DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strState].Index].Value.ToString() != "Use is forbidden"*/
-
+                if (IsCUBY && (DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strSection].Index].Value.ToString() == "Стандартные изделия"
+                         || DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strSection].Index].Value.ToString() == "Прочие изделия"
+                         || DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strSection].Index].Value.ToString() == "Материалы"))
                 {
                     DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strSection].Index].Style = GetAssemblyID.cellStyleErr;
                     DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strFileName].Index].Style = GetAssemblyID.cellStyleErr;
@@ -282,32 +272,25 @@ namespace FullBomHoum
                if (W <=0) {DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strWeight].Index].Style = GetAssemblyID.cellStyleErr;}
                */
 
-                // Изменение цвета ячейки в колонке с ошибками
-                if (DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strErC].Index].Value.ToString() != "0") //Количество ошибок в строке
-                { DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strErC].Index].Style = GetAssemblyID.cellStyleErr; }
-
-
                 //6. Проверка есть галочка нанесения покрытия, но покрытие не указано
                 if ((DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strCoatApp].Index].Value.ToString() == "1")
                 && (DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strCoating].Index].Value.ToString() == ""
-                || DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strCoating].Index].Value.ToString() == "None"))
+                || DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strCoating].Index].Value.ToString().ToUpper() == "NONE"))
 
                 {
                     DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strCoating].Index].Style = GetAssemblyID.cellStyleErr;
                     DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strCoatApp].Index].Style = GetAssemblyID.cellStyleErr;
                 }
 
-
                 //7. Проверка нет галочки нанесения покрытия, но покрытие указано
                 if ((DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strCoatApp].Index].Value.ToString() == "0")
                 && (DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strCoating].Index].Value.ToString() != ""
-                && DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strCoating].Index].Value.ToString() != "None")
+                && DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strCoating].Index].Value.ToString().ToUpper() != "NONE")
                 )
                 {
                     DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strCoating].Index].Style = GetAssemblyID.cellStyleErr;
                     DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strCoatApp].Index].Style = GetAssemblyID.cellStyleErr;
                 }
-
 
                 //8. Проверка деталей и сборок в статусе Initiated
                 if ((DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strSection].Index].Value.ToString() == "Детали"
@@ -315,6 +298,14 @@ namespace FullBomHoum
                 && DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strState].Index].Value.ToString() == GetAssemblyID.strInitiated)
                 { DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strState].Index].Style = GetAssemblyID.cellStyleErr; }
 
+
+                //8.1 Проверка деталей и сборок в статусах "r_In Work" "r_На проверке" "Подтверждение Ведущего" (статусы потока удаленщиков, не должно быть в таком)
+                if ((DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strSection].Index].Value.ToString() == "Детали" ||
+                    DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strSection].Index].Value.ToString() == "Сборочные единицы")
+                && (DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strState].Index].Value.ToString() == "r_In Work" ||
+                    DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strState].Index].Value.ToString() == "r_На проверке" ||
+                    DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strState].Index].Value.ToString() == "Подтверждение Ведущего"))
+                { DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strState].Index].Style = GetAssemblyID.cellStyleErr; }
 
                 //9. Проверка покупных в статусе In Work
                 if ((DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strSection].Index].Value.ToString() == "Прочие изделия"
@@ -343,31 +334,40 @@ namespace FullBomHoum
                 }
 
 
-                //12. Проверка заполнения ENCATA_PN 8 символов
-                /*                string regCuby = @"^CUBY-\d{8}$";
-                                string fileName = DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strFileName].Index].Value.ToString();
-                                string[] parts = fileName.Split('.');
-                                string cuteFileName = parts[0].ToString();
-                                bool IsCUBY = Regex.IsMatch(cuteFileName, regCuby);*/
-
-
-                //string s = DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strFileName].Index].Value.ToString();
+                //12. Проверка заполнения соответствия имени файла маске CUBY-12345678
+                //regCuby = @"^CUBY-\d{8}$";
                 if ((DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strSection].Index].Value.ToString() == "Детали"
                     || DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strSection].Index].Value.ToString() == "Сборочные единицы")
-                    && !IsCUBY)
+                        && !IsCUBY)
                 {
                     DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strFileName].Index].Style = GetAssemblyID.cellStyleErr;
                 }
 
 
-                if ((DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strSection].Index].Value.ToString() == "Детали"
-                    || DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strSection].Index].Value.ToString() == "Сборочные единицы")
-                    && cuteFileName != DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strPartNumber].Index].Value.ToString())
-                {
-                    DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strPartNumber].Index].Style = GetAssemblyID.cellStyleErr;
-                    DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strFileName].Index].Style = GetAssemblyID.cellStyleErr;
-                }
+                //4. Проверка на соответствие обозначения и имени файла
+                string configName = DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strConfig].Index].Value.ToString();
 
+                if (DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strSection].Index].Value.ToString() == "Детали"
+                    || DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strSection].Index].Value.ToString() == "Сборочные единицы")
+                {
+                    if (configName == ".")
+                    {
+                        if (cuteFileName != DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strPartNumber].Index].Value.ToString())
+                        {
+                            DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strPartNumber].Index].Style = GetAssemblyID.cellStyleErr;
+                            DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strFileName].Index].Style = GetAssemblyID.cellStyleErr;
+                        }
+                    }
+                    else
+                    {
+                        if (cuteFileName + configName != DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strPartNumber].Index].Value.ToString())
+                        {
+                            DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strPartNumber].Index].Style = GetAssemblyID.cellStyleErr;
+                            DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strFileName].Index].Style = GetAssemblyID.cellStyleErr;
+                            DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strConfig].Index].Style = GetAssemblyID.cellStyleErr;
+                        }
+                    }
+                }
 
                 //13. Section не пусто
                 if (DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strSection].Index].Value.ToString().Length < 3)
@@ -447,10 +447,11 @@ namespace FullBomHoum
                 { DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strMaterial].Index].Style = GetAssemblyID.cellStyleErr; }
 
 
-                //17. Проверка заполнения Толщины у деталей у которых указана лазерная резка
+                //17. Проверка заполнения Толщины у листовых деталей у которых указана лазерная резка
                 if (DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strSection].Index].Value.ToString() == "Детали"
-                && DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strLaserCut].Index].Value.ToString() == "1"
-                && DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strThickness].Index].Value.ToString() == "")
+                    && DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strShape].Index].Value.ToString() == "Лист"
+                    && DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strLaserCut].Index].Value.ToString() == "1"
+                    && DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strThickness].Index].Value.ToString() == "")
                 { DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strThickness].Index].Style = GetAssemblyID.cellStyleErr; }
 
                 //18. Проверка на одинаковую толщину strShape и strThickness
@@ -463,10 +464,18 @@ namespace FullBomHoum
                     DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strThickness].Index].Style = GetAssemblyID.cellStyleErr;
                     DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strSortament].Index].Style = GetAssemblyID.cellStyleErr;
                 } //Количество ошибок в строке
+
+
+                //19. Проверка на наличие длины трубы при 3D-лазерной резке
+                if (DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strLengthPipe].Index].Value.ToString() == ""
+                    && DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strSection].Index].Value.ToString() == "Детали"
+                    && DG.Rows[i].Cells[DG.Columns[GetAssemblyID.str3DCuting].Index].Value.ToString() == "1")
+                {
+                    DG.Rows[i].Cells[DG.Columns[GetAssemblyID.strLengthPipe].Index].Style = GetAssemblyID.cellStyleErr;
+                    DG.Rows[i].Cells[DG.Columns[GetAssemblyID.str3DCuting].Index].Style = GetAssemblyID.cellStyleErr;
+                }
             }
         }
-
-
 
 
         public void Form1_Load(object sender, EventArgs e)
@@ -530,8 +539,6 @@ namespace FullBomHoum
             Export_to_Excel(advancedDataGridView1);
 
         }
-
-
 
 
         private void Export_to_Excel(ADGV.AdvancedDataGridView DG)
@@ -691,7 +698,6 @@ namespace FullBomHoum
         }
 
 
-
         private void VD_Click(object sender, EventArgs e)
         {
             //ВД
@@ -749,63 +755,41 @@ namespace FullBomHoum
         }
 
 
-
         private void AdvancedDataGridView1_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
         { if (rowerfilt == 1) { this.label7.Text = advancedDataGridView1.Rows.Count.ToString(); SumError(out sumEr); this.label8.Text = sumEr.ToString() + " errors"; } }
 
         private void AdvancedDataGridView1_CellEndEdit(object sender, DataGridViewCellEventArgs e) { rowerfilt = 1; }
 
-        private void btnToPDF_Click(object sender, EventArgs e)
-        {
-            Export_to_Excel(advancedDataGridView1);
-        }
 
-        private void Convert_to_PDF(ADGV.AdvancedDataGridView DG)
+        private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            List<string> listDrawingPath = new List<string>();
-            try
+            if (e.RowIndex >= 0) // Проверяем, что клик был по строке (а не по заголовку)
             {
-                //Папка по умолчанию для сохранения excel
-                //while (pathname0.Contains("\\CAD")) { pathname0 = System.IO.Path.GetDirectoryName(pathname0); }    
-                //saveFileDialog1.InitialDirectory = pathname0 + "\\Текстовые документы";
+                // Снимаем выделение со всех строк
+                //advancedDataGridView1.ClearSelection();
 
-                saveFileDialog1.Title = "Save FullBOM as Excel File";
-                saveFileDialog1.FileName = GetAssemblyID.name0 + "_v" + comboBox1.SelectedItem.ToString() + "_BOM";
-                saveFileDialog1.Filter = "Excel Files(2007)|*.xlsx|Excel Files(2003)|*.xls";
-                if (saveFileDialog1.ShowDialog() != DialogResult.Cancel)
+                // Выделяем только кликнутую строку
+                advancedDataGridView1.Rows[e.RowIndex].Selected = true;
 
+
+                // Проходимся по всем ячейкам выбранной строки
+                foreach (DataGridViewCell cell in advancedDataGridView1.Rows[e.RowIndex].Cells)
                 {
-
-                    this.Cursor = Cursors.WaitCursor;
-
-
-                    foreach (DataGridViewRow i in DG.Rows)
+                    // Проверяем, имеет ли ячейка пользовательский цвет
+                    if (cell.Style.BackColor != Color.LightSalmon)
                     {
-                        if (i.IsNewRow) continue;
-                        DataGridViewCellCollection j = i.Cells;
-                        if (j[GetAssemblyID.strDraw].Value.ToString() == "1")
-                        {
-                            listDrawingPath.Add(j[GetAssemblyID.strDraw].Value.ToString());
-                        }
-
-
+                        // Если имеет, устанавливаем цвет выделения как по умолчанию
+                        cell.Style.SelectionBackColor = advancedDataGridView1.DefaultCellStyle.SelectionBackColor;
+                        cell.Style.SelectionForeColor = advancedDataGridView1.DefaultCellStyle.SelectionForeColor;
                     }
-
-
-
-                    this.Cursor = Cursors.Arrow;
+                    else
+                    {
+                        // Если нет, оставляем цвет выделения как есть
+                        cell.Style.SelectionBackColor = cell.Style.BackColor;
+                        cell.Style.SelectionForeColor = Color.Black;
+                    }
                 }
             }
-
-            catch
-            {
-
-                this.Cursor = Cursors.Arrow;
-                MessageBox.Show(" No access to file " + "\n" + saveFileDialog1.FileName.ToString());
-
-            }
-
-
         }
 
     }

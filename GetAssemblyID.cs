@@ -13,7 +13,6 @@ namespace FullBomHoum
         public static int ASMID;
         public static int ASMFolderID;
         public static string name0;
-        #region var
         //public static string strFoundInVer;   //= "Found In Version";
         public static string pdmName;           //= "test";
         public static string strFullBOM;        //= "FullBOM";//Название Bills of Materials
@@ -23,13 +22,13 @@ namespace FullBomHoum
         public static string strFoundIn;        //= "Found In";        
         public static string strDXF;            //= "DXF";
         public static string strDraw;           //= "Drawing";
-        public static string strDrawState;         //= "Drawing State";
+        public static string strDrawState;      //= "Drawing State";
         public static string strQTY;            //= "QTY";
         public static string strTQTY;           //= "TQTY";
         public static string strTotalQTY;       //= "Total QTY";
         public static string strSUMQTY;         //= "TOTAL QTY";//Суммарное количество
         public static string strWhereUsed;      //= "Where Used";
-        public static string strPartNumber;     //= "Обозначение";
+        public static string strPartNumber;     //= "Обозначение" CUBY_PN;
         public static string strSection;        //= "Раздел";
         public static string strLaserCut;       //= "Лазерная резка";
         public static string strDescription_RUS;//= "Наименование";
@@ -73,17 +72,18 @@ namespace FullBomHoum
         public static string strMaterial;       //материал
         public static string strSurfaceArea;    //Площадь
         public static string strThickness;      //Толщина
-        public static string strAnnotation;     //Аннотация 
+        public static string strAnnotation;     //Аннотация
         public static string strPrelim;         //= Preliminary design;
         public static string strPCB;            //= Печатная плата;
         public static string str3DCuting;       //= 3D cutting
         public static string strIgs;            //= IGS files
         public static string strNoSHEETS;       //= NoSHEETS;
+        public static string strLengthPipe;     //= Длина трубы при лазерной резке;
 
         public static DataGridViewCellStyle cellStyleErr = new DataGridViewCellStyle();
         public static System.Drawing.Color colorError = new System.Drawing.Color();
 
-        #endregion
+   
 
 
         public void OnCmd()
@@ -93,7 +93,7 @@ namespace FullBomHoum
                 {
                     #region setVar
                     //Заполнение названий свойств из файлаC:\Users\belov\source\FB
-                    System.IO.StreamReader objReader = new System.IO.StreamReader(@"C:\Users\v.belov\source\FUllBomTest\FullBOM_2.0.2.cfg"); //("C:\\Users\\belov\\source\\FB\\FullBOM_2.0.2.cfg");
+                    System.IO.StreamReader objReader = new System.IO.StreamReader(@"C:\Users\v.belov\source\FUllBomTest\FullBOM_2.0.8.cfg"); //("C:\\Users\\belov\\source\\FB\\FullBOM_2.0.2.cfg");
                     string sLine = "";
                     ArrayList arrText = new ArrayList();
                     while (sLine != null)
@@ -178,10 +178,10 @@ namespace FullBomHoum
                     strPrelim = arrText[59].ToString();         //= "Preliminary design";
 
 
-                    // str3DCuting = arrText[60].ToString();       //= 3D cuttings;
-                    // strIgs = arrText[61].ToString();            //= isIgs;
-                    //strNoSHEETS = arrText[62].ToString();       //= NoSHEETS;
-
+                     str3DCuting = arrText[60].ToString();       //= 3D cuttings;
+                     strIgs = arrText[61].ToString();            //= isIgs;
+                    strNoSHEETS = arrText[62].ToString();       //= NoSHEETS;
+                    strLengthPipe = arrText[63].ToString();     //= Длина трубы при лазерной резке;
 
                     colorError = System.Drawing.Color.FromName(strColErr); //Цвет ошибки
                     cellStyleErr.BackColor = colorError; //Стиль ячеек содержащих ошибки
@@ -197,7 +197,7 @@ namespace FullBomHoum
                     if (!v.IsLoggedIn)
                     {
                         v.LoginAuto("CUBY_PDM", 0);
-                        MessageBox.Show("Ok!!!");
+                       // MessageBox.Show("Ok!!!");
                     }
 
                     file5 = v.GetFileFromPath(FileName, out folder5);
