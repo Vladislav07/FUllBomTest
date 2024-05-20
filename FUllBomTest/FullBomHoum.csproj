@@ -95,5 +95,11 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ExportToPDF\ExportToPDF\ExportToPDF.csproj">
+      <Project>{2a74b457-77c4-4ee7-906a-8e1bc82fb675}</Project>
+      <Name>ExportToPDF</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

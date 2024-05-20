@@ -86,7 +86,7 @@ namespace FullBomHoum
    
 
 
-        public void OnCmd()
+        public void OnCmd(string pathAss)
         {
             try
             {
@@ -187,7 +187,8 @@ namespace FullBomHoum
                     cellStyleErr.BackColor = colorError; //Стиль ячеек содержащих ошибки
 
                     #endregion
-                    string FileName = @"C:\CUBY_PDM\Work\Other\Без проекта\CUBY-V1.1\CAD\Завод контейнер\16 - Участок обработки листового металла и трубы\Концепт участка обработки листового металла и трубы\Кран балка листа\CUBY-00153564.sldasm"; //"A:\\My\\10-тонный электрический подъемный кран\\ramka-1.sldasm";
+                    string FileName = pathAss;
+                        //@"C:\CUBY_PDM\Work\Other\Без проекта\CUBY-V1.1\CAD\Завод контейнер\16 - Участок обработки листового металла и трубы\Концепт участка обработки листового металла и трубы\Кран балка листа\CUBY-00153564.sldasm"; //"A:\\My\\10-тонный электрический подъемный кран\\ramka-1.sldasm";
                     string e = System.IO.Path.GetExtension(FileName);
                     name0 = System.IO.Path.GetFileNameWithoutExtension(FileName);
 

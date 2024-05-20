@@ -7,6 +7,8 @@ using System.Windows.Forms;
 using System.Collections.Generic;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.Drawing;
+using ExportToPDF;
+using System.IO;
 
 namespace FullBomHoum
 {
@@ -791,6 +793,74 @@ namespace FullBomHoum
                 }
             }
         }
+        private void Convert_to_PDF(ADGV.AdvancedDataGridView DG)
+        {
+            List<ComponentBom> listDrawingPath = new List<ComponentBom>();
+            FormBom fb = null;
+            try
+            {
+                foreach (DataGridViewRow i in DG.Rows)
+                {
+                    if (i.IsNewRow) continue;
+                    DataGridViewCellCollection j = i.Cells;
+                    if ((bool)j[GetAssemblyID.strDraw].Value == true && j[GetAssemblyID.strWhereUsed].Value.ToString() == GetAssemblyID.strSUMQTY)
+                    {
+                        string Found_In = j[GetAssemblyID.strFoundIn].Value.ToString();
+                        string File_Name = Path.GetFileNameWithoutExtension(j[GetAssemblyID.strFileName].Value.ToString()) + ".slddrw";
 
+                        string fileDRW = Path.Combine(Found_In, File_Name);
+                        ComponentBom comBom = new ComponentBom(fileDRW, int.Parse(j[GetAssemblyID.strSUMQTY].Value.ToString()));
+                        listDrawingPath.Add(comBom);
+                    }
+                }
+
+                if (listDrawingPath.Count > 0)
+                {
+                    string str = selectFolder();
+                    fb = new FormBom(listDrawingPath, str);
+
+                    fb.ShowDialog();
+                }
+            }
+            catch
+            {
+                this.Cursor = Cursors.Arrow;
+                MessageBox.Show(" No access to file " + "\n" + saveFileDialog1.FileName.ToString());
+            }
+        }
+
+
+
+        private string selectFolder()
+        {
+            string directory = null;
+            FolderBrowserDialog DirDialog = new FolderBrowserDialog();
+            DirDialog.Description = "Выбор директории";
+
+            DirDialog.SelectedPath = @"D:\";
+            try
+            {
+               if (DirDialog.ShowDialog() == DialogResult.OK)
+                {
+                    directory = DirDialog.SelectedPath;
+                    return directory;
+                }
+                return "";
+
+            }
+               
+            catch (Exception e)
+            {
+
+                MessageBox.Show(e.Message);
+                return "";
+            }
+            
+        }
+
+        private void toPDF_Click(object sender, EventArgs e)
+        {
+            Convert_to_PDF(advancedDataGridView1);
+        }
     }
 }

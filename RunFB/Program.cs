@@ -9,6 +9,7 @@ namespace RunFB
 {
     class Program
     {
+        [STAThread]
         static void Main(string[] args)
         {
             GetAssemblyID ass = new GetAssemblyID();
