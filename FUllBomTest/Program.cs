@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace RunFullBom
+namespace FullBomHoum
 {
     static class Program
     {
@@ -16,9 +16,7 @@ namespace RunFullBom
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            //Application.Run(new Form1());
-            Form1 f = new Form1();
-            f.ShowDialog();
+            FirstStep fs = new FirstStep();
         }
     }
 }

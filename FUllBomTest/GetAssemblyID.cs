@@ -10,6 +10,7 @@ namespace FullBomHoum
 {
     public class GetAssemblyID
     {
+      
         public static int ASMID;
         public static int ASMFolderID;
         public static string name0;
@@ -211,6 +212,7 @@ namespace FullBomHoum
                         ASMFolderID = folder5.ID;
 
                         Application.Run(new Form1());
+                      
                     }
                     else
                     {

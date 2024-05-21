@@ -803,7 +803,7 @@ namespace FullBomHoum
                 {
                     if (i.IsNewRow) continue;
                     DataGridViewCellCollection j = i.Cells;
-                    if ((bool)j[GetAssemblyID.strDraw].Value == true && j[GetAssemblyID.strWhereUsed].Value.ToString() == GetAssemblyID.strSUMQTY)
+                    if (j[GetAssemblyID.strDraw].Value.ToString() == "True" && j[GetAssemblyID.strWhereUsed].Value.ToString() == GetAssemblyID.strSUMQTY)
                     {
                         string Found_In = j[GetAssemblyID.strFoundIn].Value.ToString();
                         string File_Name = Path.GetFileNameWithoutExtension(j[GetAssemblyID.strFileName].Value.ToString()) + ".slddrw";
