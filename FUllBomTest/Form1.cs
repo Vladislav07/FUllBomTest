@@ -7,7 +7,7 @@ using System.Windows.Forms;
 using System.Collections.Generic;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.Drawing;
-using ExportToPDF;
+
 using System.IO;
 
 namespace FullBomHoum
@@ -820,6 +820,10 @@ namespace FullBomHoum
                     fb = new FormBom(listDrawingPath, str);
 
                     fb.ShowDialog();
+                }
+                else
+                {
+                    MessageBox.Show("нет чертежей");
                 }
             }
             catch

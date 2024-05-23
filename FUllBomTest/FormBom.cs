@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Drawing.Printing;
 
 
-namespace ExportToPDF
+namespace FullBomHoum
 {
     public struct ComponentBom
     {
