@@ -136,9 +136,9 @@ namespace FullBomHoum
                     }
                     catch
                     {
-
+                       MessageBox.Show("К сожалению, попробуйте завтра.");
                     }
-                    MessageBox.Show("К сожалению, попробуйте завтра.");
+                    
                     
                 }                
             }

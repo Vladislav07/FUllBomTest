@@ -2,7 +2,7 @@
 using System;
 using System.Data;
 using System.Text.RegularExpressions;
-
+using System.Windows.Forms;
 
 namespace FullBomHoum
 {
@@ -140,19 +140,29 @@ namespace FullBomHoum
                         if (!vault1.IsLoggedIn) { vault1.LoginAuto(GetAssemblyID.pdmName, 0); }
                         bFile = (IEdmFile7)vault1.GetFileFromPath(d, out IEdmFolder5 bFolder);
                         if ((bFile != null) && (!bFile.IsLocked)) //true если файл не пусто и зачекинен                                           
-                        { workRow[GetAssemblyID.strDraw] = true; workRow[GetAssemblyID.strDrawState] = bFile.CurrentState.Name.ToString(); 
-
-                            // Достаем из чертежа версию ссылки на родителя (VersionRef)
-                            IEdmReference5 ref5 = bFile.GetReferenceTree(bFolder.ID);
-                            IEdmReference10 ref10 = (IEdmReference10)ref5;
-                            IEdmPos5 pos = ref10.GetFirstChildPosition3("A", true, true, (int)EdmRefFlags.EdmRef_File, "", 0);
-                            while (!pos.IsNull)
+                        {
+                            workRow[GetAssemblyID.strDraw] = true; 
+                            workRow[GetAssemblyID.strDrawState] = bFile.CurrentState.Name.ToString();
+                            try
+                            {
+                                // Достаем из чертежа версию ссылки на родителя (VersionRef)
+                                IEdmReference5 ref5 = bFile.GetReferenceTree(bFolder.ID);
+                                IEdmReference10 ref10 = (IEdmReference10)ref5;
+                                IEdmPos5 pos = ref10.GetFirstChildPosition3("A", true, true, (int)EdmRefFlags.EdmRef_File, "", 0);
+                                while (!pos.IsNull)
                             {
 
                                 IEdmReference10 @ref = (IEdmReference10)ref5.GetNextChild(pos);
                                 Console.Write("VersionRef - " + @ref.VersionRef + "\r\n");   // версия ссылки на родителя, для дебага, можно удалить
                                 workRow[GetAssemblyID.strRev] = @ref.VersionRef.ToString();
                             }
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show("error:" + bFile.Name);
+                                
+                            }
+                           
                         }
                         // //Получаем и вносим в таблицу ID файла вручную
                         //   cFile = (IEdmFile7)vault1.GetFileFromPath(p, out IEdmFolder5 cFolder);
@@ -453,13 +463,18 @@ namespace FullBomHoum
                     while (!pos.IsNull)
                     {
                         @ref = (IEdmReference10)Reference.GetNextChild(pos);
-                        if (@ref.Name.ToString().Contains("Cut-List-Item") || @ref.Name.ToString().Contains("Sheet"))
+                        if (@ref.Name.ToString().Contains("Cut-List-Item") || @ref.Name.ToString().Contains("Sheet")|| @ref.Name.ToString().Contains("<"))
                         {
                             continue;
                         }
                         else
                         {
-                            string refName = @ref.Name.ToString().Substring(0, @ref.Name.ToString().LastIndexOf('.'));
+                           
+                            
+                              string refName = @ref.Name.ToString().Substring(0, @ref.Name.ToString().LastIndexOf('.'));
+                       
+                           
+
                             if (@ref.Name.ToString().Contains(".dxf") || @ref.Name.ToString().Contains(".DXF"))
                             {
                                 if (isExistRefInListConfig(allConfigCurrentFile, refName))
@@ -484,6 +499,11 @@ namespace FullBomHoum
                             }
                         }
                     }
+
+                  //  if(counterRefConfigDXF < 0)
+                  //  {
+                   //     MessageBox.Show(currentFileName);
+                   // }
 
                     if (allConfigCurrentFile.Length == counterRefConfigDXF)
                     {
@@ -515,6 +535,7 @@ namespace FullBomHoum
                 string cfgName = null;
 
                 string result = "";
+                
                 while (!pos.IsNull)
                 {
                     cfgName = cfgList.GetNext(pos);
