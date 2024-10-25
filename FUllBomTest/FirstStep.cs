@@ -14,9 +14,10 @@ namespace FullBomHoum
         string path;
         public FirstStep()
         {
-            OpenFileDialog ofd = new OpenFileDialog();
+           // OpenFileDialog ofd = new OpenFileDialog();
             try
-            { 
+            {
+                /*
 
                 if (vault1 == null)
                 {
@@ -39,6 +40,8 @@ namespace FullBomHoum
                     return;
                 }
                 path = ofd.FileName;
+                */
+                path = @"C:\CUBY_PDM\Work\Other\Без проекта\CUBY-V1.1\CAD\Завод контейнер\17 - Участок нарезки трубы 100х100\Элементы участка\Стеллаж для труб 100х100\17.7 Кранбалка для загрузки труб 100х100 из стеллажа на рольганг\Концепт с консолью\CUBY-00257443.sldasm";
                 GetAssemblyID ass = new GetAssemblyID();
                 ass.OnCmd(path);
 

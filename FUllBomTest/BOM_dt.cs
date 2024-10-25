@@ -3,6 +3,9 @@ using System;
 using System.Data;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using System.IO;
+using System.Collections.Generic;
+
 
 namespace FullBomHoum
 {
@@ -10,12 +13,20 @@ namespace FullBomHoum
     {
         static IEdmVault5 vault1 = new EdmVault5();
 
+        IEdmBatchUnlock2 batchUnlocker;
+        IEdmSelectionList6 fileList = null;
+        EdmSelectionObject poSel;
+        
+        int fileCount = 0;
+        static int i = 0;
+
+
         //Из головной сборки получает dt
         public static void BOM(IEdmFile7 aFile, string config, int version, int BomFlag, int qtyAfile, ref DataTable dt)
 
         {
             IEdmBomView bomView;
-
+            
             bomView = aFile.GetComputedBOM(GetAssemblyID.strFullBOM, version, config, BomFlag); //1//(int)EdmBomFlag.EdmBf_AsBuilt + //2// (int)EdmBomFlag.EdmBf_ShowSelected);
             bomView.GetRows(out object[] ppoRows);
             bomView.GetColumns(out EdmBomColumn[] ppoColumns);
@@ -63,6 +74,7 @@ namespace FullBomHoum
             string f = "";//Found In
             IEdmFile7 bFile;
 
+         
 
             bool TrueRowFlag = false;
             // bool TrueRowFlagIGS = false;
@@ -139,28 +151,74 @@ namespace FullBomHoum
                         //Проверяем есть ли зачекиненный чертеж в папке с деталью с именем соответствующим детали
                         if (!vault1.IsLoggedIn) { vault1.LoginAuto(GetAssemblyID.pdmName, 0); }
                         bFile = (IEdmFile7)vault1.GetFileFromPath(d, out IEdmFolder5 bFolder);
+
+                        int refDrToModel = -1;
+                        bool isValiddrawing = false;
+                       
+
                         if ((bFile != null) && (!bFile.IsLocked)) //true если файл не пусто и зачекинен                                           
                         {
                             workRow[GetAssemblyID.strDraw] = true; 
                             workRow[GetAssemblyID.strDrawState] = bFile.CurrentState.Name.ToString();
                             try
                             {
+                                int versionDraiwing = bFile.CurrentVersion;
+            
+                                List<string> listDrawings = new List<string>();
+
+                                isValiddrawing = bFile.NeedsRegeneration(versionDraiwing, bFolder.ID);
+
                                 // Достаем из чертежа версию ссылки на родителя (VersionRef)
                                 IEdmReference5 ref5 = bFile.GetReferenceTree(bFolder.ID);
                                 IEdmReference10 ref10 = (IEdmReference10)ref5;
                                 IEdmPos5 pos = ref10.GetFirstChildPosition3("A", true, true, (int)EdmRefFlags.EdmRef_File, "", 0);
                                 while (!pos.IsNull)
-                            {
+                                    {
 
-                                IEdmReference10 @ref = (IEdmReference10)ref5.GetNextChild(pos);
-                                Console.Write("VersionRef - " + @ref.VersionRef + "\r\n");   // версия ссылки на родителя, для дебага, можно удалить
-                                workRow[GetAssemblyID.strRev] = @ref.VersionRef.ToString();
-                            }
+                                        IEdmReference10 @ref = (IEdmReference10)ref5.GetNextChild(pos);
+                                    //
+                                        string extension = Path.GetExtension(@ref.Name);
+                                        if(extension == ".sldasm"|| extension == ".sldprt" || extension == ".SLDASM"|| extension == ".SLDPRT")
+                                            {
+                                               workRow[GetAssemblyID.strRev] = @ref.VersionRef.ToString();
+                                               refDrToModel= @ref.VersionRef;
+                                        break;
+                                            }
+                                        else
+                                            {
+                                                ref5.GetNextChild(pos);
+                                            }                                                                                                           
+                                    }
                             }
                             catch (Exception ex)
                             {
                                 MessageBox.Show("error:" + bFile.Name);
                                 
+                            }
+                            IEdmFile7 modelFile = (IEdmFile7)vault1.GetFileFromPath(p, out IEdmFolder5 modelFolder);
+                            if (!(refDrToModel == modelFile.CurrentVersion) || isValiddrawing)
+                            {
+                                writeNameToTxt(bFile.Name + "vers :" + workRow[GetAssemblyID.strRev] + " - " + workRow[GetAssemblyID.strLatestVer] + " Is - " + isValiddrawing.ToString());
+                                EdmSelItem selItem = new EdmSelItem();
+                                selItem.mlDocID = bFile.ID;
+                                selItem.mlProjID = bFolder.ID;
+                                GetAssemblyID.SelectionDrawings.Add(selItem)
+                                /*
+                                GetAssemblyID.listdrawings.Add(bFile.GetLocalPath(bFolder.ID));
+
+                                Array.Resize(ref GetAssemblyID.ppoSelection, i + 1);
+                                GetAssemblyID.ppoSelection[i] = new EdmLib.EdmSelItem();
+
+                                GetAssemblyID.ppoSelection[i].mlDocID = bFile.ID;
+                                GetAssemblyID.ppoSelection[i].mlProjID = bFolder.ID;
+                                i++;
+                                */
+                                
+
+                            }
+                            else
+                            {
+                               // MessageBox.Show(bFile.Name);
                             }
                            
                         }
@@ -570,5 +628,51 @@ namespace FullBomHoum
                 return result;
             }
         }
+        async static void writeNameToTxt(string message)
+        {
+            string path = @"D:\note1.txt";
+         
+            using (StreamWriter writer = new StreamWriter(path, true))
+            {
+                await writer.WriteLineAsync(message);
+                
+            }
+        }
+
+       public  void SldOpenFile()
+        {
+            try
+            {
+                /*
+                EdmVault5 v = new EdmVault5();
+
+                if (!v.IsLoggedIn)
+                {
+                    v.LoginAuto("CUBY_PDM", 0);
+                    
+                }
+
+                GetAssemblyID.batchUnlocker.AddSelection((EdmLib.EdmVault5)v,  GetAssemblyID.ppoSelection);
+                if(GetAssemblyID.batchUnlocker != null)
+                {
+                    GetAssemblyID.batchUnlocker.Comment = "Refrash";
+                    GetAssemblyID.batchUnlocker.UnlockFiles(0);
+
+                }
+                */
+
+                SldApp sldApp = null;
+                sldApp = new SldApp();
+                sldApp.Metod();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+          
+        }
+
+
     }
 }

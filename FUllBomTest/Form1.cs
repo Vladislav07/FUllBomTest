@@ -866,5 +866,12 @@ namespace FullBomHoum
         {
             Convert_to_PDF(advancedDataGridView1);
         }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            BOM_dt dt = new BOM_dt();
+            dt.SldOpenFile();
+           
+        }
     }
 }

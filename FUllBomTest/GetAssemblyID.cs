@@ -2,7 +2,7 @@
 using EdmLib;
 using System.Windows.Forms;
 using System.Collections;
-
+using System.Collections.Generic;
 
 
 
@@ -10,7 +10,11 @@ namespace FullBomHoum
 {
     public class GetAssemblyID
     {
-      
+        public static List<string> listdrawings;
+        public static EdmSelItem[] ppoSelection;
+        public static List<EdmSelItem> SelectionDrawings;
+        public static IEdmBatchUnlock2 batchUnlocker;
+
         public static int ASMID;
         public static int ASMFolderID;
         public static string name0;
@@ -89,6 +93,11 @@ namespace FullBomHoum
 
         public void OnCmd(string pathAss)
         {
+            listdrawings = new List<string>();
+            ppoSelection = new EdmSelItem[10];
+            SelectionDrawings = new List<EdmSelItem>();
+
+
             try
             {
                 {
@@ -196,11 +205,17 @@ namespace FullBomHoum
                     IEdmFile5 file5 = null;
                     IEdmFolder5 folder5 = null;
                     EdmVault5 v = new EdmVault5();
+
                     if (!v.IsLoggedIn)
                     {
                         v.LoginAuto("CUBY_PDM", 0);
                        // MessageBox.Show("Ok!!!");
                     }
+                    IEdmVault7 vault2 = null;
+                  
+                    vault2 = (IEdmVault7)v;
+                    batchUnlocker = (IEdmBatchUnlock2)vault2.CreateUtility(EdmUtility.EdmUtil_BatchUnlock);
+
 
                     file5 = v.GetFileFromPath(FileName, out folder5);
 
