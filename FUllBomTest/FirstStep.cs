@@ -41,7 +41,8 @@ namespace FullBomHoum
                 }
                 path = ofd.FileName;
                 */
-                path = @"C:\CUBY_PDM\Work\Other\Без проекта\CUBY-V1.1\CAD\Завод контейнер\17 - Участок нарезки трубы 100х100\Элементы участка\Стеллаж для труб 100х100\17.7 Кранбалка для загрузки труб 100х100 из стеллажа на рольганг\Концепт с консолью\CUBY-00257443.sldasm";
+
+                path = @"C:\CUBY_PDM\Work\Other\Без проекта\CUBY-V1.1\CAD\Завод контейнер\Склад из контейнеров\Лестница\CUBY-00259479.sldasm";
                 GetAssemblyID ass = new GetAssemblyID();
                 ass.OnCmd(path);
 

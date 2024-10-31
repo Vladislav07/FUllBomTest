@@ -202,18 +202,9 @@ namespace FullBomHoum
                                 EdmSelItem selItem = new EdmSelItem();
                                 selItem.mlDocID = bFile.ID;
                                 selItem.mlProjID = bFolder.ID;
-                                GetAssemblyID.SelectionDrawings.Add(selItem)
-                                /*
+                                GetAssemblyID.SelectionDrawings.Add(selItem);
                                 GetAssemblyID.listdrawings.Add(bFile.GetLocalPath(bFolder.ID));
-
-                                Array.Resize(ref GetAssemblyID.ppoSelection, i + 1);
-                                GetAssemblyID.ppoSelection[i] = new EdmLib.EdmSelItem();
-
-                                GetAssemblyID.ppoSelection[i].mlDocID = bFile.ID;
-                                GetAssemblyID.ppoSelection[i].mlProjID = bFolder.ID;
-                                i++;
-                                */
-                                
+                               
 
                             }
                             else
@@ -643,27 +634,13 @@ namespace FullBomHoum
         {
             try
             {
-                /*
-                EdmVault5 v = new EdmVault5();
-
-                if (!v.IsLoggedIn)
-                {
-                    v.LoginAuto("CUBY_PDM", 0);
-                    
-                }
-
-                GetAssemblyID.batchUnlocker.AddSelection((EdmLib.EdmVault5)v,  GetAssemblyID.ppoSelection);
-                if(GetAssemblyID.batchUnlocker != null)
-                {
-                    GetAssemblyID.batchUnlocker.Comment = "Refrash";
-                    GetAssemblyID.batchUnlocker.UnlockFiles(0);
-
-                }
-                */
 
                 SldApp sldApp = null;
                 sldApp = new SldApp();
+                sldApp.AddDrawingsToBatchGet();
+                sldApp.BatchGet();
                 sldApp.Metod();
+                sldApp.DrawingsBatchUnLock();
             }
             catch (Exception)
             {

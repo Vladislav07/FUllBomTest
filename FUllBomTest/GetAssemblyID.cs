@@ -11,9 +11,9 @@ namespace FullBomHoum
     public class GetAssemblyID
     {
         public static List<string> listdrawings;
-        public static EdmSelItem[] ppoSelection;
-        public static List<EdmSelItem> SelectionDrawings;
-        public static IEdmBatchUnlock2 batchUnlocker;
+        public static EPDM.Interop.epdm.EdmSelItem[] ppoSelection;
+        public static List<EPDM.Interop.epdm.EdmSelItem> SelectionDrawings;
+        public static EPDM.Interop.epdm.IEdmBatchUnlock2 batchUnlocker;
 
         public static int ASMID;
         public static int ASMFolderID;
@@ -93,11 +93,8 @@ namespace FullBomHoum
 
         public void OnCmd(string pathAss)
         {
+            SelectionDrawings = new List<EPDM.Interop.epdm.EdmSelItem>();
             listdrawings = new List<string>();
-            ppoSelection = new EdmSelItem[10];
-            SelectionDrawings = new List<EdmSelItem>();
-
-
             try
             {
                 {
@@ -211,12 +208,7 @@ namespace FullBomHoum
                         v.LoginAuto("CUBY_PDM", 0);
                        // MessageBox.Show("Ok!!!");
                     }
-                    IEdmVault7 vault2 = null;
-                  
-                    vault2 = (IEdmVault7)v;
-                    batchUnlocker = (IEdmBatchUnlock2)vault2.CreateUtility(EdmUtility.EdmUtil_BatchUnlock);
-
-
+ 
                     file5 = v.GetFileFromPath(FileName, out folder5);
 
                     if ((e == ".sldasm") || (e == ".SLDASM"))   //replace slddrw
